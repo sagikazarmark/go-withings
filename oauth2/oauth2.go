@@ -45,9 +45,12 @@ var EndpointHIPAA = oauth2.Endpoint{
 // https://developer.withings.com/developer-guide/data-api/demo-user#demo-user
 var ModeDemo = oauth2.SetAuthURLParam("mode", "demo")
 
-// Config wraps a golang.org/x/oauth2.Config struct to extend its
+// Config is an alias to oauth2.Config.
+type Config = oauth2.Config
+
+// WithingsConfig wraps a golang.org/x/oauth2.Config struct to extend its
 // functionality with Withings specific behavior.
-type Config struct {
+type WithingsConfig struct {
 	*oauth2.Config
 }
 
@@ -58,7 +61,7 @@ type Config struct {
 // makes the scope parameter a comma separated string.
 //
 // https://developer.withings.com/api-reference#operation/oauth2-authorize
-func (c *Config) AuthCodeURL(state string, opts ...oauth2.AuthCodeOption) string {
+func (c *WithingsConfig) AuthCodeURL(state string, opts ...oauth2.AuthCodeOption) string {
 	if len(c.Scopes) > 0 {
 		opts = append([]oauth2.AuthCodeOption{oauth2.SetAuthURLParam("scope", strings.Join(c.Scopes, ","))}, opts...)
 	}
@@ -72,7 +75,7 @@ func (c *Config) AuthCodeURL(state string, opts ...oauth2.AuthCodeOption) string
 // to make it compatible with the Withings API.
 //
 // https://developer.withings.com/api-reference#operation/oauth2-getaccesstoken
-func (c *Config) Exchange(ctx context.Context, code string) (*oauth2.Token, error) {
+func (c *WithingsConfig) Exchange(ctx context.Context, code string) (*oauth2.Token, error) {
 	v := url.Values{
 		"action":     {"requesttoken"},
 		"grant_type": {"authorization_code"},

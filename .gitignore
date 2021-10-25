@@ -1,4 +1,5 @@
 /.direnv/
+/.env
 /bin/
 /build/
 /vendor/

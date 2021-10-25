@@ -90,6 +90,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -139,5 +140,8 @@ func main() {
 		fmt.Printf("Scope: %s\n", token.Extra("scope"))
 	})
 
-	http.ListenAndServe("127.0.0.1:8080", nil)
+	err := http.ListenAndServe("127.0.0.1:8080", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

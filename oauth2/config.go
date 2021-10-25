@@ -9,8 +9,9 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/sagikazarmark/go-withings/oauth2/internal"
 	"golang.org/x/oauth2"
+
+	"github.com/sagikazarmark/go-withings/oauth2/internal"
 )
 
 // Client returns an HTTP client using the provided token.
@@ -42,7 +43,7 @@ func (c *WithingsConfig) TokenSource(ctx context.Context, t *oauth2.Token) oauth
 func retrieveToken(ctx context.Context, c *Config, v url.Values) (*oauth2.Token, error) {
 	tk, err := internal.RetrieveToken(ctx, c.ClientID, c.ClientSecret, c.Endpoint.TokenURL, v, internal.AuthStyle(c.Endpoint.AuthStyle))
 	if err != nil {
-		if rErr, ok := err.(*internal.RetrieveError); ok {
+		if rErr, ok := err.(*internal.RetrieveError); ok { // nolint: errorlint
 			return nil, (*oauth2.RetrieveError)(rErr)
 		}
 		return nil, err
@@ -61,6 +62,6 @@ func tokenFromInternal(t *internal.Token) *oauth2.Token {
 		TokenType:    t.TokenType,
 		RefreshToken: t.RefreshToken,
 		Expiry:       t.Expiry,
-		//raw:          t.Raw,
+		// raw:          t.Raw,
 	}).WithExtra(t.Raw)
 }

@@ -84,5 +84,5 @@ func (c *WithingsConfig) Exchange(ctx context.Context, code string) (*oauth2.Tok
 	if c.RedirectURL != "" {
 		v.Set("redirect_uri", c.RedirectURL)
 	}
-	return retrieveToken(ctx, c, v)
+	return retrieveToken(ctx, c.Config, v)
 }

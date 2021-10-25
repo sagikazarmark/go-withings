@@ -1,3 +1,7 @@
+run:
+    skip-dirs:
+        - oauth2/internal
+
 linters-settings:
     golint:
         min-confidence: 0.1
@@ -12,3 +16,4 @@ linters:
         - import
     disable:
         - noctx
+

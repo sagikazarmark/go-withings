@@ -36,7 +36,6 @@ func (tf *tokenRefresher) Token() (*oauth2.Token, error) {
 		"grant_type":    {"refresh_token"},
 		"refresh_token": {tf.refreshToken},
 	})
-
 	if err != nil {
 		return nil, err
 	}

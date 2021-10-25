@@ -1,5 +1,7 @@
 # Go client for the [Withings API](https://developer.withings.com/)
 
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/sagikazarmark/go-withings/CI?style=flat-square)](https://github.com/sagikazarmark/go-withings/actions?query=workflow%3ACI)
+[![Codecov](https://img.shields.io/codecov/c/github/sagikazarmark/go-withings?style=flat-square)](https://codecov.io/gh/sagikazarmark/go-withings)
 [![Go Report Card](https://goreportcard.com/badge/github.com/sagikazarmark/go-withings?style=flat-square)](https://goreportcard.com/report/github.com/sagikazarmark/go-withings)
 ![Go Version](https://img.shields.io/badge/go%20version-%3E=1.16-61CFDD.svg?style=flat-square)
 [![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/mod/github.com/sagikazarmark/go-withings)

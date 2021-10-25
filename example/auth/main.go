@@ -1,8 +1,9 @@
 /*
-This package demonstrates how OAuth2 authentication works in the Withings API.
+Package auth demonstrates how OAuth2 authentication works in the Withings API.
 
 Prerequisites
 
+You need the following to run this example:
 	- Withings account
 	- Withings application
 	- HTTP tunnel (ngrok, inlets, tunnelto, etc)
@@ -39,7 +40,7 @@ Personally, I prefer Tunnelto, because it's cheap and ridiculuosly easy to use:
 But Ngrok isn't difficult either:
 	ngrok http --subdomain withings-$USER-local 8080
 
-Again, if you don't have a subscription, you might have to lose the `--subdomain`
+Again, if you don't have a subscription, you might have to lose the "--subdomain"
 part and get a randomly generated domain.
 
 Either way, take note of your URL, because you are going to need it for the next step.
@@ -50,14 +51,16 @@ Read more about the callback URL here:
 
 Withings application
 
-Once you have an account and a callback URL ready,
-you can register an application here: https://account.withings.com/partner/add_oauth2
+Once you have a Withings account and a callback URL ready,
+register an application here: https://account.withings.com/partner/add_oauth2
 
 Fill out the form with your details
 (yes, even the logo is required, I just used my standard profile picture for dev purposes).
 
 Make sure to fill out the "Callback URL" field with your tunnel URL + "/oauth2/callback".
-For example `https://withings-YOURNAME-local.tunnelto.dev/oauth2/callback`.
+
+For example:
+	https://withings-YOURNAME-local.tunnelto.dev/oauth2/callback
 
 Once you registered your application take note of the client ID and secret.
 
@@ -72,9 +75,9 @@ Then run the application:
 	go run main.go
 
 Open the URL that shows up on the console and authorize the application.
-(Don't worry, it'll only use a demo account, not your real accont)
+(Don't worry, it'll only use a demo account, not your real account.)
 
-If you've done everything right, the access token (and some other info) should show up on in the console:
+If you've done everything right, the access token (and some other info) should show up in the console:
 	Access token: ba3438ebe9bae6b642e429cc7c662bda
 	Expiry: 2021-10-25T22:41:26+02:00
 	Refresh token: 93e82d64d8279589d506fffb067ed59d

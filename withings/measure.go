@@ -332,7 +332,7 @@ func joinActivityFields(fields []ActivityField) string {
 // Withings API docs: https://developer.withings.com/api-reference#operation/measurev2-getintradayactivity
 type IntradayActivityField string
 
-// Activity fields
+// IntradayActivity fields
 const (
 	IntradayActivityFieldSteps     IntradayActivityField = "steps"      // Number of steps.
 	IntradayActivityFieldElevation IntradayActivityField = "elevation"  // Number of floors climbed.

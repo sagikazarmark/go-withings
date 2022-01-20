@@ -152,7 +152,7 @@ func (s *MeasureService) Getmeas(ctx context.Context, measureTypes []MeasureType
 		return nil, nil, errors.New("need at least one measure type")
 	}
 
-	const u = "measure"
+	const urlPath = "measure"
 
 	form := url.Values{
 		"action":   {"getmeas"},
@@ -178,7 +178,7 @@ func (s *MeasureService) Getmeas(ctx context.Context, measureTypes []MeasureType
 
 	measuresResp := new(getmeasResponse)
 
-	resp, err := s.client.PostForm(ctx, u, form, measuresResp)
+	resp, err := s.client.PostForm(ctx, urlPath, form, measuresResp)
 
 	return &measuresResp.Body, resp, err
 }
@@ -292,7 +292,7 @@ func (s *MeasureService) Getactivity(ctx context.Context, fields []ActivityField
 		return nil, nil, errors.New("need at least one activity data field")
 	}
 
-	const u = "v2/measure"
+	const urlPath = "v2/measure"
 
 	form := url.Values{
 		"action":      {"getactivity"},
@@ -312,7 +312,7 @@ func (s *MeasureService) Getactivity(ctx context.Context, fields []ActivityField
 
 	activityResp := new(getactivityResponse)
 
-	resp, err := s.client.PostForm(ctx, u, form, activityResp)
+	resp, err := s.client.PostForm(ctx, urlPath, form, activityResp)
 
 	return &activityResp.Body, resp, err
 }
@@ -403,7 +403,7 @@ func (s *MeasureService) Getintradayactivity(ctx context.Context, fields []Intra
 		return nil, nil, errors.New("need at least one intraday activity data field")
 	}
 
-	const u = "v2/measure"
+	const urlPath = "v2/measure"
 
 	form := url.Values{
 		"action":      {"getintradayactivity"},
@@ -417,7 +417,7 @@ func (s *MeasureService) Getintradayactivity(ctx context.Context, fields []Intra
 
 	intradayactivityResp := new(getintradayactivityResponse)
 
-	resp, err := s.client.PostForm(ctx, u, form, intradayactivityResp)
+	resp, err := s.client.PostForm(ctx, urlPath, form, intradayactivityResp)
 
 	return &intradayactivityResp.Body, resp, err
 }

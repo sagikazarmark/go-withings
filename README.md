@@ -18,6 +18,28 @@
 go get github.com/sagikazarmark/go-withings
 ```
 
+## API coverage
+
+The Withings API provides a wide range of services, but many of them are targeted at (health) service providers.
+The primary focus of this SDK is to provide access to the data APIs, so providing a full coverage is not a goal at this time.
+That being said, PRs are always welcome.
+
+Supported API services/calls:
+
+- OAuth2
+- Measure (WIP)
+- Heart (WIP)
+- Sleep (WIP)
+- Notify (WIP)
+
+Unsupported API services/calls:
+
+- Dropshipment
+- User
+- Signature
+
+Feel free to open a discussion or issue if something is missing and you would like it to be included.
+
 
 ## Development
 

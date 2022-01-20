@@ -36,6 +36,9 @@ type Client struct {
 
 	// Services used for talking to different parts of the Withings API.
 	Measure *MeasureService
+	Heart   *HeartService
+	Sleep   *SleepService
+	Notify  *NotifyService
 }
 
 type service struct {
@@ -68,6 +71,9 @@ func newClient(httpClient *http.Client, endpoint string) *Client {
 	c.common.client = c
 
 	c.Measure = (*MeasureService)(&c.common)
+	c.Heart = (*HeartService)(&c.common)
+	c.Sleep = (*SleepService)(&c.common)
+	c.Notify = (*NotifyService)(&c.common)
 
 	return c
 }

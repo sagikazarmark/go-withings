@@ -24,7 +24,7 @@ import (
 
 // Endpoint is the Public Cloud endpoint for Withings.
 //
-// https://developer.withings.com/developer-guide/getting-started/register-to-withings-api#public-endpoint
+// https://developer.withings.com/developer-guide/v3/withings-solutions/app-to-app-solution
 var Endpoint = oauth2.Endpoint{
 	AuthURL:   "https://account.withings.com/oauth2_user/authorize2",
 	TokenURL:  "https://wbsapi.withings.net/v2/oauth2",
@@ -33,7 +33,7 @@ var Endpoint = oauth2.Endpoint{
 
 // Endpoint is the HIPAA endpoint for Withings.
 //
-// https://developer.withings.com/developer-guide/getting-started/register-to-withings-hipaa-api#hipaa-endpoint
+// https://developer.withings.com/developer-guide/v3/withings-solutions/security-and-compliance
 var EndpointHIPAA = oauth2.Endpoint{
 	AuthURL:   "https://account.us.withingsmed.com/oauth2_user/authorize2",
 	TokenURL:  "https://wbsapi.us.withingsmed.net/v2/oauth2",

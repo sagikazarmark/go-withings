@@ -8,13 +8,13 @@ You need the following to run this example:
 	- Withings application
 	- HTTP tunnel (ngrok, inlets, tunnelto, etc)
 
+This guide takes you through the registration steps on the Withings portal: https://developer.withings.com/developer-guide/v3/integration-guide/public-health-data-api/developer-account/create-your-accesses-no-medical-cloud
+
 Withings account
 
 The first step is creating a Withings account here: https://account.withings.com/connectionuser/account_create
 
 You can use your personal account, but Withings recommends creating new accounts for production applications.
-
-Read more about registration here: https://developer.withings.com/developer-guide/getting-started/register-to-withings-api#get-ready
 
 HTTP tunnel
 
@@ -46,8 +46,8 @@ part and get a randomly generated domain.
 Either way, take note of your URL, because you are going to need it for the next step.
 
 Read more about the callback URL here:
-	- https://developer.withings.com/developer-guide/faq/faq#can-i-use-an-ip-adress-or-localhost-as-the-callback-url-or-redirect-uri
-	- https://developer.withings.com/developer-guide/glossary/glossary/#callback-url
+	- https://developer.withings.com/developer-guide/v3/integration-guide/public-health-data-api/faq/#can-i-use-an-ip-adress-or-localhost-as-the-callback-url-or-redirect-uri
+	- https://developer.withings.com/developer-guide/v3/integration-guide/public-health-data-api/glossary/glossary-page#callback-url
 
 Withings application
 

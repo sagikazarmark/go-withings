@@ -66,7 +66,17 @@ func main() {
 		log.Fatal(err)
 	}
 
+	workouts, _, err := client.Measure.Getworkouts(
+		context.Background(),
+		withings.AllWorkoutFields,
+		opts,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	fmt.Printf("Measures: %#v\n\n", measures)
 	fmt.Printf("Activities: %#v\n\n", activities)
 	fmt.Printf("Intraday activities: %#v\n\n", intradayactivities)
+	fmt.Printf("Workouts: %#v\n\n", workouts)
 }

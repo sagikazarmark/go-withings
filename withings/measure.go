@@ -432,9 +432,155 @@ func joinIntradayActivityFields(fields []IntradayActivityField) string {
 	return strings.Join(s, ",")
 }
 
+// WorkoutField is a type of metric tracked during an activity.
+//
+// Withings API docs: https://developer.withings.com/api-reference/#operation/measurev2-getworkouts
+type WorkoutField string
+
+// WorkoutField fields
+const (
+	WorkoutFieldCalories          WorkoutField = "calories"            // Active calories burned (in Kcal).
+	WorkoutFieldIntensity         WorkoutField = "intensity"           // Intensity.
+	WorkoutFieldManualDistance    WorkoutField = "manual_distance"     // Distance travelled manually entered by user (in meters).
+	WorkoutFieldManualCalories    WorkoutField = "manual_calories"     // Active calories burned manually entered by user (in Kcal).
+	WorkoutFieldHRAverage         WorkoutField = "hr_average"          // Average heart rate.
+	WorkoutFieldHRMin             WorkoutField = "hr_min"              // Minimal heart rate.
+	WorkoutFieldHRMax             WorkoutField = "hr_max"              // Maximal heart rate.
+	WorkoutFieldHRZone0           WorkoutField = "hr_zone_0"           // Duration in seconds when heart rate was in a light zone.
+	WorkoutFieldHRZone1           WorkoutField = "hr_zone_1"           // Duration in seconds when heart rate was in a moderate zone.
+	WorkoutFieldHRZone2           WorkoutField = "hr_zone_2"           // Duration in seconds when heart rate was in an intense zone.
+	WorkoutFieldHRZone3           WorkoutField = "hr_zone_3"           // Duration in seconds when heart rate was in maximal zone.
+	WorkoutFieldPauseDuration     WorkoutField = "pause_duration"      // Total pause time in second filled by user.
+	WorkoutFieldAlgoPauseDuration WorkoutField = "algo_pause_duration" // Total pause time in seconds detected by Withings device (swim only).
+	WorkoutFieldSpO2Average       WorkoutField = "spo2_average"        // Average percent of SpO2 percent value during a workout.
+	WorkoutFieldSteps             WorkoutField = "steps"               // Number of steps.
+	WorkoutFieldDistance          WorkoutField = "distance"            // Distance travelled (in meters).
+	WorkoutFieldElevation         WorkoutField = "elevation"           // Number of floors climbed.
+	WorkoutFieldPoolLaps          WorkoutField = "pool_laps"           // Number of pool laps.
+	WorkoutFieldStrokes           WorkoutField = "strokes"             // Number of strokes.
+	WorkoutFieldPoolLength        WorkoutField = "pool_length"         // Length of the pool.
+)
+
+// AllWorkoutFields is the list of all supported workout fields.
+//
+// TODO: make this a method instead?
+var AllWorkoutFields = []WorkoutField{
+	WorkoutFieldCalories,
+	WorkoutFieldIntensity,
+	WorkoutFieldManualDistance,
+	WorkoutFieldManualCalories,
+	WorkoutFieldHRAverage,
+	WorkoutFieldHRMin,
+	WorkoutFieldHRMax,
+	WorkoutFieldHRZone0,
+	WorkoutFieldHRZone1,
+	WorkoutFieldHRZone2,
+	WorkoutFieldHRZone3,
+	WorkoutFieldPauseDuration,
+	WorkoutFieldAlgoPauseDuration,
+	WorkoutFieldSpO2Average,
+	WorkoutFieldSteps,
+	WorkoutFieldDistance,
+	WorkoutFieldElevation,
+	WorkoutFieldPoolLaps,
+	WorkoutFieldStrokes,
+	WorkoutFieldPoolLength,
+}
+
+type getworkoutsResponse struct {
+	Body Workouts `json:"body"`
+}
+
+// Workouts is the response from the Getworkouts API call.
+//
+// Withings API docs: https://developer.withings.com/api-reference/#operation/measurev2-getworkouts
+type Workouts struct {
+	Series []Workout `json:"series"`
+}
+
+// Workout aggregates data related to workout sessions from different trackers.
+//
+// Fields are populated based on the requested fields.
+//
+// TODO: consider making fields pointers, so they dont get populated when no data is returned.
+//
+// Withings API docs: https://developer.withings.com/api-reference/#operation/measurev2-getworkouts
+type Workout struct {
+	Category  int    `json:"category"`
+	Timezone  string `json:"timezone"`
+	Model     int    `json:"model"`
+	Attrib    int    `json:"attrib"`
+	Startdate int64  `json:"startdate"`
+	Enddate   int64  `json:"enddate"`
+	Date      string `json:"date"`
+	Modified  int64  `json:"modified"`
+	DeviceID  string `json:"deviceid"`
+
+	Data WorkoutData `json:"data"`
+}
+
+type WorkoutData struct {
+	Calories          float64 `json:"calories"` // Note: spec says int, but it's in fact a float
+	Intensity         int     `json:"intensity"`
+	ManualDistance    int     `json:"manual_distance"`
+	ManualCalories    int     `json:"manual_calories"`
+	HrAverage         int     `json:"hr_average"`
+	HrMin             int     `json:"hr_min"`
+	HrMax             int     `json:"hr_max"`
+	HrZone0           int     `json:"hr_zone_0"`
+	HrZone1           int     `json:"hr_zone_1"`
+	HrZone2           int     `json:"hr_zone_2"`
+	HrZone3           int     `json:"hr_zone_3"`
+	PauseDuration     int     `json:"pause_duration"`
+	AlgoPauseDuration int     `json:"algo_pause_duration"`
+	SpO2Average       int     `json:"spo2_average"`
+	Steps             int     `json:"steps"`
+	Distance          float64 `json:"distance"`  // Note: spec says int, but it's in fact a float
+	Elevation         float64 `json:"elevation"` // Note: spec says int, but it's in fact a float
+	PoolLaps          int     `json:"pool_laps"`
+	Strokes           int     `json:"strokes"`
+	PoolLength        int     `json:"pool_length"`
+}
+
 // Getworkouts provides data relevant to workout sessions from the different trackers.
 //
 // Withings API docs: https://developer.withings.com/api-reference#operation/measurev2-getworkouts
-func (s *MeasureService) Getworkouts(ctx context.Context) (*Activities, *Response, error) {
-	panic("not implemented")
+func (s *MeasureService) Getworkouts(ctx context.Context, fields []WorkoutField, opts MeasureGetOptions) (*Workouts, *Response, error) {
+	if len(fields) == 0 {
+		return nil, nil, errors.New("need at least one workout data field")
+	}
+
+	const urlPath = "v2/measure"
+
+	form := url.Values{
+		"action":      {"getworkouts"},
+		"data_fields": {joinWorkoutFields(fields)},
+	}
+
+	if !opts.LastUpdate.IsZero() {
+		form.Add("lastupdate", fmt.Sprintf("%d", opts.LastUpdate.Unix()))
+	} else if !opts.StartDate.IsZero() && !opts.EndDate.IsZero() {
+		form.Add("startdateymd", opts.StartDate.Format("2006-01-02"))
+		form.Add("enddateymd", opts.EndDate.Format("2006-01-02"))
+	}
+
+	if opts.Offset > 0 {
+		form.Add("offset", fmt.Sprintf("%d", opts.Offset))
+	}
+
+	getworkoutsResp := new(getworkoutsResponse)
+
+	resp, err := s.client.PostForm(ctx, urlPath, form, getworkoutsResp)
+
+	return &getworkoutsResp.Body, resp, err
+}
+
+func joinWorkoutFields(fields []WorkoutField) string {
+	s := make([]string, 0, len(fields))
+
+	for _, f := range fields {
+		s = append(s, string(f))
+	}
+
+	return strings.Join(s, ",")
 }

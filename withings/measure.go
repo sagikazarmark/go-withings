@@ -40,7 +40,7 @@ type MeasureGetOptions struct {
 // Withings API docs: https://developer.withings.com/api-reference#operation/measure-getmeas
 type MeasureType int
 
-// Measure types
+// MeasureType values
 const (
 	MeasureTypeWeight         MeasureType = 1   // Weight (kg)
 	MeasureTypeHeight         MeasureType = 4   // Height (meter)
@@ -66,44 +66,88 @@ const (
 	MeasureTypeAtrialFib      MeasureType = 139 // Atrial fibrillation result from PPG
 )
 
-// AllMeasureTypes is the list of all supported measure types.
-//
-// TODO: make this a method instead?
-var AllMeasureTypes = []MeasureType{
-	MeasureTypeWeight,
-	MeasureTypeHeight,
-	MeasureTypeFatFreeMass,
-	MeasureTypeFatRatio,
-	MeasureTypeFatMassWeight,
-	MeasureTypeDiastolicBP,
-	MeasureTypeSystolicBP,
-	MeasureTypeHeartPulse,
-	MeasureTypeTemp,
-	MeasureTypeSpO2,
-	MeasureTypeBodyTemp,
-	MeasureTypeSkinTemp,
-	MeasureTypeMuscleMass,
-	MeasureTypeHydration,
-	MeasureTypeBoneMass,
-	MeasureTypePWaveVel,
-	MeasureTypeVO2Max,
-	MeasureTypeQRSInterval,
-	MeasureTypePRInterval,
-	MeasureTypeQTInterval,
-	MeasureTypeCorrQTInterval,
-	MeasureTypeAtrialFib,
+var validMeasureTypeValues = map[MeasureType]struct{}{
+	MeasureTypeWeight:         {},
+	MeasureTypeHeight:         {},
+	MeasureTypeFatFreeMass:    {},
+	MeasureTypeFatRatio:       {},
+	MeasureTypeFatMassWeight:  {},
+	MeasureTypeDiastolicBP:    {},
+	MeasureTypeSystolicBP:     {},
+	MeasureTypeHeartPulse:     {},
+	MeasureTypeTemp:           {},
+	MeasureTypeSpO2:           {},
+	MeasureTypeBodyTemp:       {},
+	MeasureTypeSkinTemp:       {},
+	MeasureTypeMuscleMass:     {},
+	MeasureTypeHydration:      {},
+	MeasureTypeBoneMass:       {},
+	MeasureTypePWaveVel:       {},
+	MeasureTypeVO2Max:         {},
+	MeasureTypeQRSInterval:    {},
+	MeasureTypePRInterval:     {},
+	MeasureTypeQTInterval:     {},
+	MeasureTypeCorrQTInterval: {},
+	MeasureTypeAtrialFib:      {},
 }
 
-// Category differentiates between real measurements and user objectives.
+// IsValid checks if v is a valid MeasureType.
+func (v MeasureType) IsValid() bool {
+	_, ok := validMeasureTypeValues[v]
+
+	return ok
+}
+
+// AllMeasureTypes returns the list of all MeasureType values.
+func AllMeasureTypes() []MeasureType {
+	return []MeasureType{
+		MeasureTypeWeight,
+		MeasureTypeHeight,
+		MeasureTypeFatFreeMass,
+		MeasureTypeFatRatio,
+		MeasureTypeFatMassWeight,
+		MeasureTypeDiastolicBP,
+		MeasureTypeSystolicBP,
+		MeasureTypeHeartPulse,
+		MeasureTypeTemp,
+		MeasureTypeSpO2,
+		MeasureTypeBodyTemp,
+		MeasureTypeSkinTemp,
+		MeasureTypeMuscleMass,
+		MeasureTypeHydration,
+		MeasureTypeBoneMass,
+		MeasureTypePWaveVel,
+		MeasureTypeVO2Max,
+		MeasureTypeQRSInterval,
+		MeasureTypePRInterval,
+		MeasureTypeQTInterval,
+		MeasureTypeCorrQTInterval,
+		MeasureTypeAtrialFib,
+	}
+}
+
+// MeasureCategory differentiates between real measurements and user objectives.
 //
 // Withings API docs: https://developer.withings.com/api-reference#operation/measure-getmeas
-type Category int
+type MeasureCategory int
 
-// Categories
+// MeasureCategory values
 const (
-	CategoryReal          Category = 1 // Real measures
-	CategoryUserObjective Category = 2 // User objectives
+	MeasureCategoryRealMeasure   MeasureCategory = 1 // Real measures
+	MeasureCategoryUserObjective MeasureCategory = 2 // User objectives
 )
+
+var validMeasureCategoryValues = map[MeasureCategory]struct{}{
+	MeasureCategoryRealMeasure:   {},
+	MeasureCategoryUserObjective: {},
+}
+
+// IsValid checks if v is a valid MeasureCategory.
+func (v MeasureCategory) IsValid() bool {
+	_, ok := validMeasureCategoryValues[v]
+
+	return ok
+}
 
 type getmeasResponse struct {
 	Body Measures `json:"body"`
@@ -122,32 +166,39 @@ type Measures struct {
 //
 // Withings API docs: https://developer.withings.com/api-reference#operation/measure-getmeas
 type MeasureGroup struct {
-	GroupID   int64     `json:"grpid"`
-	Attrib    int       `json:"attrib"`
-	Date      int       `json:"date"`
-	CreatedAt int       `json:"created"`
-	Category  Category  `json:"category"`
-	DeviceID  string    `json:"deviceid"`
-	Measures  []Measure `json:"measures"`
-	Comment   string    `json:"comment"` // Deprecated
+	GroupID   int64           `json:"grpid"`
+	Attrib    int             `json:"attrib"`
+	Date      int             `json:"date"`
+	CreatedAt int             `json:"created"`
+	Category  MeasureCategory `json:"category"`
+	DeviceID  string          `json:"deviceid"`
+	Measures  []Measure       `json:"measures"`
+	Comment   string          `json:"comment"` // Deprecated
 }
 
 // Measure is an individual data point.
 //
 // Withings API docs: https://developer.withings.com/api-reference#operation/measure-getmeas
 type Measure struct {
-	Value int `json:"value"`
-	Type  int `json:"type"`
-	Unit  int `json:"unit"`
-	Algo  int `json:"algo"` // Deprecated
-	FM    int `json:"fm"`   // Deprecated
-	FW    int `json:"fw"`   // Deprecated
+	Value int         `json:"value"`
+	Type  MeasureType `json:"type"`
+	Unit  int         `json:"unit"`
+	Algo  int         `json:"algo"` // Deprecated
+	FM    int         `json:"fm"`   // Deprecated
+	FW    int         `json:"fw"`   // Deprecated
 }
 
 // Getmeas provides measures stored on a specific date.
 //
 // Withings API docs: https://developer.withings.com/api-reference#operation/measure-getmeas
-func (s *MeasureService) Getmeas(ctx context.Context, measureTypes []MeasureType, category Category, opts MeasureGetOptions) (*Measures, *Response, error) {
+func (s *MeasureService) Getmeas(ctx context.Context, measureTypes []MeasureType, category MeasureCategory, opts MeasureGetOptions) (*Measures, *Response, error) {
+	// validate category first because it requires less effort
+	if !category.IsValid() {
+		return nil, nil, errors.New("invalid category")
+	}
+
+	measureTypes = filterValidMeasureTypeValues(measureTypes)
+
 	if len(measureTypes) == 0 {
 		return nil, nil, errors.New("need at least one measure type")
 	}
@@ -162,7 +213,7 @@ func (s *MeasureService) Getmeas(ctx context.Context, measureTypes []MeasureType
 	if len(measureTypes) == 1 {
 		form.Add("meastype", fmt.Sprintf("%d", measureTypes[0]))
 	} else {
-		form.Add("meastypes", joinMeasureTypes(measureTypes))
+		form.Add("meastypes", strings.Join(measureTypesToString(measureTypes), ","))
 	}
 
 	if !opts.LastUpdate.IsZero() {
@@ -183,14 +234,28 @@ func (s *MeasureService) Getmeas(ctx context.Context, measureTypes []MeasureType
 	return &measuresResp.Body, resp, err
 }
 
-func joinMeasureTypes(ints []MeasureType) string {
-	s := make([]string, 0, len(ints))
+func filterValidMeasureTypeValues(values []MeasureType) []MeasureType {
+	var validValues []MeasureType
 
-	for _, i := range ints {
-		s = append(s, fmt.Sprintf("%d", i))
+	for _, v := range values {
+		if !v.IsValid() {
+			continue
+		}
+
+		validValues = append(validValues, v)
 	}
 
-	return strings.Join(s, ",")
+	return validValues
+}
+
+func measureTypesToString(measureTypes []MeasureType) []string {
+	s := make([]string, 0, len(measureTypes))
+
+	for _, v := range measureTypes {
+		s = append(s, fmt.Sprintf("%d", v))
+	}
+
+	return s
 }
 
 // ActivityField is a type of metric tracked during an activity.
@@ -198,7 +263,7 @@ func joinMeasureTypes(ints []MeasureType) string {
 // Withings API docs: https://developer.withings.com/api-reference#operation/measurev2-getactivity
 type ActivityField string
 
-// Activity fields
+// ActivityField values
 const (
 	ActivityFieldSteps         ActivityField = "steps"         // Number of steps.
 	ActivityFieldDistance      ActivityField = "distance"      // Distance travelled (in meters).
@@ -218,26 +283,52 @@ const (
 	ActivityFieldHRZone3       ActivityField = "hr_zone_3"     // Duration in seconds when heart rate was in maximal zone.
 )
 
-// AllActivityFields is the list of all supported activity fields.
-//
-// TODO: make this a method instead?
-var AllActivityFields = []ActivityField{
-	ActivityFieldSteps,
-	ActivityFieldDistance,
-	ActivityFieldElevation,
-	ActivityFieldSoft,
-	ActivityFieldModerate,
-	ActivityFieldIntense,
-	ActivityFieldActive,
-	ActivityFieldCalories,
-	ActivityFieldTotalCalories,
-	ActivityFieldHRAverage,
-	ActivityFieldHRMin,
-	ActivityFieldHRMax,
-	ActivityFieldHRZone0,
-	ActivityFieldHRZone1,
-	ActivityFieldHRZone2,
-	ActivityFieldHRZone3,
+var validActivityFieldValues = map[ActivityField]struct{}{
+	ActivityFieldSteps:         {},
+	ActivityFieldDistance:      {},
+	ActivityFieldElevation:     {},
+	ActivityFieldSoft:          {},
+	ActivityFieldModerate:      {},
+	ActivityFieldIntense:       {},
+	ActivityFieldActive:        {},
+	ActivityFieldCalories:      {},
+	ActivityFieldTotalCalories: {},
+	ActivityFieldHRAverage:     {},
+	ActivityFieldHRMin:         {},
+	ActivityFieldHRMax:         {},
+	ActivityFieldHRZone0:       {},
+	ActivityFieldHRZone1:       {},
+	ActivityFieldHRZone2:       {},
+	ActivityFieldHRZone3:       {},
+}
+
+// IsValid checks if v is a valid ActivityField.
+func (v ActivityField) IsValid() bool {
+	_, ok := validActivityFieldValues[v]
+
+	return ok
+}
+
+// AllActivityFields is the list of all ActivityField values.
+func AllActivityFields() []ActivityField {
+	return []ActivityField{
+		ActivityFieldSteps,
+		ActivityFieldDistance,
+		ActivityFieldElevation,
+		ActivityFieldSoft,
+		ActivityFieldModerate,
+		ActivityFieldIntense,
+		ActivityFieldActive,
+		ActivityFieldCalories,
+		ActivityFieldTotalCalories,
+		ActivityFieldHRAverage,
+		ActivityFieldHRMin,
+		ActivityFieldHRMax,
+		ActivityFieldHRZone0,
+		ActivityFieldHRZone1,
+		ActivityFieldHRZone2,
+		ActivityFieldHRZone3,
+	}
 }
 
 type getactivityResponse struct {
@@ -288,8 +379,10 @@ type Activity struct {
 //
 // Withings API docs: https://developer.withings.com/api-reference#operation/measurev2-getactivity
 func (s *MeasureService) Getactivity(ctx context.Context, fields []ActivityField, opts MeasureGetOptions) (*Activities, *Response, error) {
+	fields = filterValidActivityFieldValues(fields)
+
 	if len(fields) == 0 {
-		return nil, nil, errors.New("need at least one activity data field")
+		return nil, nil, errors.New("need at least one activity field")
 	}
 
 	const urlPath = "v2/measure"
@@ -317,6 +410,20 @@ func (s *MeasureService) Getactivity(ctx context.Context, fields []ActivityField
 	return &activityResp.Body, resp, err
 }
 
+func filterValidActivityFieldValues(values []ActivityField) []ActivityField {
+	var validValues []ActivityField
+
+	for _, v := range values {
+		if !v.IsValid() {
+			continue
+		}
+
+		validValues = append(validValues, v)
+	}
+
+	return validValues
+}
+
 func joinActivityFields(fields []ActivityField) string {
 	s := make([]string, 0, len(fields))
 
@@ -332,7 +439,7 @@ func joinActivityFields(fields []ActivityField) string {
 // Withings API docs: https://developer.withings.com/api-reference#operation/measurev2-getintradayactivity
 type IntradayActivityField string
 
-// IntradayActivity fields
+// IntradayActivityField values
 const (
 	IntradayActivityFieldSteps     IntradayActivityField = "steps"      // Number of steps.
 	IntradayActivityFieldElevation IntradayActivityField = "elevation"  // Number of floors climbed.
@@ -345,19 +452,38 @@ const (
 	IntradayActivityFieldSpO2Auto  IntradayActivityField = "spo2_auto"  // SpO2 measurement automatically tracked by a device tracker.
 )
 
-// AllIntradayActivityFields is the list of all supported intraday activity fields.
-//
-// TODO: make this a method instead?
-var AllIntradayActivityFields = []IntradayActivityField{
-	IntradayActivityFieldSteps,
-	IntradayActivityFieldElevation,
-	IntradayActivityFieldCalories,
-	IntradayActivityFieldDistance,
-	IntradayActivityFieldStroke,
-	IntradayActivityFieldPoolLap,
-	IntradayActivityFieldDuration,
-	IntradayActivityFieldHeartRate,
-	IntradayActivityFieldSpO2Auto,
+var validIntradayActivityFieldValues = map[IntradayActivityField]struct{}{
+	IntradayActivityFieldSteps:     {},
+	IntradayActivityFieldElevation: {},
+	IntradayActivityFieldCalories:  {},
+	IntradayActivityFieldDistance:  {},
+	IntradayActivityFieldStroke:    {},
+	IntradayActivityFieldPoolLap:   {},
+	IntradayActivityFieldDuration:  {},
+	IntradayActivityFieldHeartRate: {},
+	IntradayActivityFieldSpO2Auto:  {},
+}
+
+// IsValid checks if v is a valid IntradayActivityField.
+func (v IntradayActivityField) IsValid() bool {
+	_, ok := validIntradayActivityFieldValues[v]
+
+	return ok
+}
+
+// AllIntradayActivityFields is the list of all IntradayActivityField values.
+func AllIntradayActivityFields() []IntradayActivityField {
+	return []IntradayActivityField{
+		IntradayActivityFieldSteps,
+		IntradayActivityFieldElevation,
+		IntradayActivityFieldCalories,
+		IntradayActivityFieldDistance,
+		IntradayActivityFieldStroke,
+		IntradayActivityFieldPoolLap,
+		IntradayActivityFieldDuration,
+		IntradayActivityFieldHeartRate,
+		IntradayActivityFieldSpO2Auto,
+	}
 }
 
 type getintradayactivityResponse struct {
@@ -399,6 +525,8 @@ type IntradayActivity struct {
 //
 // Withings API docs: https://developer.withings.com/api-reference#operation/measurev2-getintradayactivity
 func (s *MeasureService) Getintradayactivity(ctx context.Context, fields []IntradayActivityField, opts MeasureGetOptions) (*IntradayActivities, *Response, error) {
+	fields = filterValidIntradayActivityFieldValues(fields)
+
 	if len(fields) == 0 {
 		return nil, nil, errors.New("need at least one intraday activity data field")
 	}
@@ -422,6 +550,20 @@ func (s *MeasureService) Getintradayactivity(ctx context.Context, fields []Intra
 	return &intradayactivityResp.Body, resp, err
 }
 
+func filterValidIntradayActivityFieldValues(values []IntradayActivityField) []IntradayActivityField {
+	var validValues []IntradayActivityField
+
+	for _, v := range values {
+		if !v.IsValid() {
+			continue
+		}
+
+		validValues = append(validValues, v)
+	}
+
+	return validValues
+}
+
 func joinIntradayActivityFields(fields []IntradayActivityField) string {
 	s := make([]string, 0, len(fields))
 
@@ -432,12 +574,12 @@ func joinIntradayActivityFields(fields []IntradayActivityField) string {
 	return strings.Join(s, ",")
 }
 
-// WorkoutField is a type of metric tracked during an activity.
+// WorkoutField is a type of metric tracked during workout sessions.
 //
 // Withings API docs: https://developer.withings.com/api-reference/#operation/measurev2-getworkouts
 type WorkoutField string
 
-// WorkoutField fields
+// WorkoutField values
 const (
 	WorkoutFieldCalories          WorkoutField = "calories"            // Active calories burned (in Kcal).
 	WorkoutFieldIntensity         WorkoutField = "intensity"           // Intensity.
@@ -461,30 +603,60 @@ const (
 	WorkoutFieldPoolLength        WorkoutField = "pool_length"         // Length of the pool.
 )
 
+var validWorkoutFieldValues = map[WorkoutField]struct{}{
+	WorkoutFieldCalories:          {},
+	WorkoutFieldIntensity:         {},
+	WorkoutFieldManualDistance:    {},
+	WorkoutFieldManualCalories:    {},
+	WorkoutFieldHRAverage:         {},
+	WorkoutFieldHRMin:             {},
+	WorkoutFieldHRMax:             {},
+	WorkoutFieldHRZone0:           {},
+	WorkoutFieldHRZone1:           {},
+	WorkoutFieldHRZone2:           {},
+	WorkoutFieldHRZone3:           {},
+	WorkoutFieldPauseDuration:     {},
+	WorkoutFieldAlgoPauseDuration: {},
+	WorkoutFieldSpO2Average:       {},
+	WorkoutFieldSteps:             {},
+	WorkoutFieldDistance:          {},
+	WorkoutFieldElevation:         {},
+	WorkoutFieldPoolLaps:          {},
+	WorkoutFieldStrokes:           {},
+	WorkoutFieldPoolLength:        {},
+}
+
+// IsValid checks if v is a valid WorkoutField.
+func (v WorkoutField) IsValid() bool {
+	_, ok := validWorkoutFieldValues[v]
+
+	return ok
+}
+
 // AllWorkoutFields is the list of all supported workout fields.
-//
-// TODO: make this a method instead?
-var AllWorkoutFields = []WorkoutField{
-	WorkoutFieldCalories,
-	WorkoutFieldIntensity,
-	WorkoutFieldManualDistance,
-	WorkoutFieldManualCalories,
-	WorkoutFieldHRAverage,
-	WorkoutFieldHRMin,
-	WorkoutFieldHRMax,
-	WorkoutFieldHRZone0,
-	WorkoutFieldHRZone1,
-	WorkoutFieldHRZone2,
-	WorkoutFieldHRZone3,
-	WorkoutFieldPauseDuration,
-	WorkoutFieldAlgoPauseDuration,
-	WorkoutFieldSpO2Average,
-	WorkoutFieldSteps,
-	WorkoutFieldDistance,
-	WorkoutFieldElevation,
-	WorkoutFieldPoolLaps,
-	WorkoutFieldStrokes,
-	WorkoutFieldPoolLength,
+func AllWorkoutFields() []WorkoutField {
+	return []WorkoutField{
+		WorkoutFieldCalories,
+		WorkoutFieldIntensity,
+		WorkoutFieldManualDistance,
+		WorkoutFieldManualCalories,
+		WorkoutFieldHRAverage,
+		WorkoutFieldHRMin,
+		WorkoutFieldHRMax,
+		WorkoutFieldHRZone0,
+		WorkoutFieldHRZone1,
+		WorkoutFieldHRZone2,
+		WorkoutFieldHRZone3,
+		WorkoutFieldPauseDuration,
+		WorkoutFieldAlgoPauseDuration,
+		WorkoutFieldSpO2Average,
+		WorkoutFieldSteps,
+		WorkoutFieldDistance,
+		WorkoutFieldElevation,
+		WorkoutFieldPoolLaps,
+		WorkoutFieldStrokes,
+		WorkoutFieldPoolLength,
+	}
 }
 
 type getworkoutsResponse struct {
@@ -546,6 +718,8 @@ type WorkoutData struct {
 //
 // Withings API docs: https://developer.withings.com/api-reference#operation/measurev2-getworkouts
 func (s *MeasureService) Getworkouts(ctx context.Context, fields []WorkoutField, opts MeasureGetOptions) (*Workouts, *Response, error) {
+	fields = filterValidWorkoutFieldValues(fields)
+
 	if len(fields) == 0 {
 		return nil, nil, errors.New("need at least one workout data field")
 	}
@@ -573,6 +747,20 @@ func (s *MeasureService) Getworkouts(ctx context.Context, fields []WorkoutField,
 	resp, err := s.client.PostForm(ctx, urlPath, form, getworkoutsResp)
 
 	return &getworkoutsResp.Body, resp, err
+}
+
+func filterValidWorkoutFieldValues(values []WorkoutField) []WorkoutField {
+	var validValues []WorkoutField
+
+	for _, v := range values {
+		if !v.IsValid() {
+			continue
+		}
+
+		validValues = append(validValues, v)
+	}
+
+	return validValues
 }
 
 func joinWorkoutFields(fields []WorkoutField) string {

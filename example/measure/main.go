@@ -40,8 +40,8 @@ func main() {
 
 	measures, _, err := client.Measure.Getmeas(
 		context.Background(),
-		withings.AllMeasureTypes,
-		withings.CategoryReal,
+		withings.AllMeasureTypes(),
+		withings.MeasureCategoryRealMeasure,
 		opts,
 	)
 	if err != nil {
@@ -50,7 +50,7 @@ func main() {
 
 	activities, _, err := client.Measure.Getactivity(
 		context.Background(),
-		withings.AllActivityFields,
+		withings.AllActivityFields(),
 		opts,
 	)
 	if err != nil {
@@ -59,7 +59,7 @@ func main() {
 
 	intradayactivities, _, err := client.Measure.Getintradayactivity(
 		context.Background(),
-		withings.AllIntradayActivityFields,
+		withings.AllIntradayActivityFields(),
 		opts,
 	)
 	if err != nil {
@@ -68,7 +68,7 @@ func main() {
 
 	workouts, _, err := client.Measure.Getworkouts(
 		context.Background(),
-		withings.AllWorkoutFields,
+		withings.AllWorkoutFields(),
 		opts,
 	)
 	if err != nil {

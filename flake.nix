@@ -10,14 +10,15 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        buildDeps = with pkgs; [ git go gnumake ];
-        devDeps = with pkgs; buildDeps ++ [ golangci-lint gotestsum ];
+        buildDeps = with pkgs; [ git go gnumake go-task ];
+        devDeps = with pkgs; buildDeps ++ [ gotestsum golangci-lint ];
 
         goShell = go:
           pkgs.mkShell {
             buildInputs = (pkgs.lib.remove pkgs.go devDeps) ++ [ go ];
           };
-      in {
+      in
+      {
         devShell = pkgs.mkShell {
           buildInputs = devDeps;
         };

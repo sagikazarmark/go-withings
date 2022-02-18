@@ -1,0 +1,13 @@
+version: '3'
+
+tasks:
+  auth:
+    desc: Run auth example
+    dir: auth/
+    cmds:
+      - go run main.go
+  measure:
+    desc: Run measure example
+    dir: measure/
+    cmds:
+      - go run main.go

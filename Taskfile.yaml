@@ -1,0 +1,32 @@
+version: '3'
+
+includes:
+  example:
+    taskfile: ./example
+    dir: ./example
+
+tasks:
+  test:
+    desc: Run tests
+    vars:
+      TEST_FORMAT: short
+    cmds:
+      - mkdir -p build/
+      - gotestsum --no-summary=skipped --junitfile build/coverage.xml --jsonfile build/test.json --format {{.TEST_FORMAT}} -- -race -coverprofile=build/coverage.txt -covermode=atomic {{default "./..." .CLI_ARGS}}
+    sources:
+      - "*.go"
+      - "**/*.go"
+    method: none
+  lint:
+    desc: Run linters
+    cmds:
+      - golangci-lint run {{.LINTER_ARGS}}
+  check:
+    desc: Run all checks
+    cmds:
+      - task: lint
+      - task: test
+  fix:
+    desc: Run automatic code fixers
+    cmds:
+      - golangci-lint run --fix

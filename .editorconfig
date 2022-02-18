@@ -14,5 +14,8 @@ indent_style = tab
 [*.nix]
 indent_size = 2
 
+[Taskfile.yaml]
+indent_size = 2
+
 [*.go]
 indent_style = tab
